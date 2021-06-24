@@ -3,35 +3,43 @@ package com.engratcp.demo.Controller;
 import com.engratcp.demo.Exception.ResourceNotFoundException;
 import com.engratcp.demo.Model.ServoRequest;
 import com.engratcp.demo.Repository.RequestRepository;
+
+import com.engratcp.demo.Service.ServoRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/")
+@RestController
+@RequestMapping("/api")
 public class ServoRequestController {
+
+    private ServoRequestService servoRequestService;
 
     @Autowired
     RequestRepository requestRepository;
 
-    @GetMapping("test")
+    @GetMapping("/test")
     public String Test(){
         System.out.println("Testing...");
         return "Testing.";
     }
 //    get all requests
-    @GetMapping("servoRequests")
+    @GetMapping("/servoRequests")
     public List<ServoRequest> servoRequests(){
         System.out.println("get all servo Requests");
 
         return requestRepository.findAll();
     }
     // create a new ServoRequest
-    @PostMapping("servoRequest")
-    public ServoRequest createServoRequest(@Validated @RequestBody ServoRequest servoRequest){
+    @PostMapping("/servoRequest")
+    public ServoRequest createServoRequest(@RequestBody ServoRequest servoRequest){
 
+//      requestRepository.save(servoRequest);
+        System.out.println(servoRequest.toString());
         System.out.println("servo Request created");
+        servoRequestService.writeServoAngle(servoRequest.getRequest());
         return requestRepository.save(servoRequest);
     }
     @GetMapping("/servoRequests/{id}")
